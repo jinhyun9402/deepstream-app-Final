@@ -46,7 +46,7 @@
 
 #define DEFAULT_X_WINDOW_WIDTH 1920
 #define DEFAULT_X_WINDOW_HEIGHT 1080
-
+tracked_data* in_track_data;
 AppCtx* appCtx[MAX_INSTANCES];
 static guint cintr = FALSE;
 static GMainLoop* main_loop = NULL;
@@ -346,8 +346,8 @@ void udp_send_initialize()
 
 gint udp_send(gpointer data)
 {
-    Tracker_output.Centerpoint_X = tracked_data.centerx;
-    Tracker_output.Centerpoint_Y = tracked_data.centery;
+    Tracker_output.Centerpoint_X = in_track_data.centerx;
+    Tracker_output.Centerpoint_Y = in_track_data.centery;
     Tracker_output.Box_width = 20;
     Tracker_output.Box_height = 60;
     Tracker_output.Class_number = 1;

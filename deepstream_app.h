@@ -46,7 +46,9 @@ extern "C"
 #include "deepstream_secondary_gie.h"
 #include "deepstream_c2d_msg.h"
 
+
 typedef struct _AppCtx AppCtx;
+typedef struct _tracked_data tracked_data;
 
 typedef void (*bbox_generated_callback) (AppCtx *appCtx, GstBuffer *buf,
     NvDsBatchMeta *batch_meta, guint index);
@@ -65,7 +67,7 @@ typedef struct track_buf
 	float score;
 };
 
-static struct tracked_data
+struct _tracked_data
 {
 	float centerx;
 	float centery;
@@ -75,7 +77,7 @@ static struct tracked_data
 	char* label;
 	int idx;
 	float score;
-}tracked_data;
+};
 
 typedef struct
 {
