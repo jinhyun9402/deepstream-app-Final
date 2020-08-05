@@ -46,7 +46,7 @@
 
 #define DEFAULT_X_WINDOW_WIDTH 1920
 #define DEFAULT_X_WINDOW_HEIGHT 1080
-tracked_data* in_track_data;
+tracked_data* tracking_output;
 AppCtx* appCtx[MAX_INSTANCES];
 static guint cintr = FALSE;
 static GMainLoop* main_loop = NULL;
@@ -85,6 +85,7 @@ int SendPort = 44666;
 char UDP_Xavier_send[UDPSendBufferSize];
 
 struct sockaddr_in clientAddr;
+extern struct tracking_output;
 
 struct Tracker_output
 {
@@ -346,8 +347,8 @@ void udp_send_initialize()
 
 gint udp_send(gpointer data)
 {
-    Tracker_output.Centerpoint_X = in_track_data.centerx;
-    Tracker_output.Centerpoint_Y = in_track_data.centery;
+    Tracker_output.Centerpoint_X = tracking_output->centerx;
+    Tracker_output.Centerpoint_Y = tracking_output->centery;
     Tracker_output.Box_width = 20;
     Tracker_output.Box_height = 60;
     Tracker_output.Class_number = 1;
@@ -856,7 +857,7 @@ int main(int argc, char* argv[])
 
     g_timeout_add(40, event_thread_func, NULL);
 
-    //////////////////////////////////////////////////////////////  
+    //////////////////////////////////////////////////////////////
     //200726_Jinhyun
     //UDP send 
 

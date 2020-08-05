@@ -48,7 +48,6 @@ extern "C"
 
 
 typedef struct _AppCtx AppCtx;
-typedef struct _tracked_data tracked_data;
 
 typedef void (*bbox_generated_callback) (AppCtx *appCtx, GstBuffer *buf,
     NvDsBatchMeta *batch_meta, guint index);
@@ -67,7 +66,7 @@ typedef struct track_buf
 	float score;
 };
 
-struct _tracked_data
+struct tracked_data
 {
 	float centerx;
 	float centery;
@@ -77,7 +76,7 @@ struct _tracked_data
 	char* label;
 	int idx;
 	float score;
-};
+}tracking_output;
 
 typedef struct
 {

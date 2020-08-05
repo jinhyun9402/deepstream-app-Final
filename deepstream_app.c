@@ -224,8 +224,7 @@ bus_callback (GstBus * bus, GstMessage * message, gpointer data)
  * property "gie-kitti-output-dir" must be set in configuration file.
  * Data of different sources and frames is dumped in separate file.
  */
-static void
-write_kitti_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
+static void write_kitti_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 {
   gchar bbox_file[1024] = { 0 };
   FILE *bbox_params_dump_file = NULL;
@@ -263,8 +262,7 @@ write_kitti_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 /**
  * Function to dump past frame objs in kitti format.
  */
-static void
-write_kitti_past_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
+static void write_kitti_past_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 {
   if (!appCtx->config.kitti_track_dir_path)
     return;
@@ -317,8 +315,7 @@ write_kitti_past_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
  */
 
 
-static void
-write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
+static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 {
   
   gchar bbox_file[1024] = { 0 };
@@ -359,12 +356,9 @@ write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 				A.centerx=A.centerx+C.centerx;
 				A.centery=A.centery+C.centery;
 				A.score=C.score;
-				tracked_data.centerx = A.centerx;
-				tracked_data.centery = A.centery;
-				
+                tracking_output.centerx = A.centerx;
+                tracking_output.centery = A.centery;
 
-
-//				printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f\n",A.fframe,A.centerx,A.centery,A.score);
 				printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f\n",A.fframe, tracked_data.centerx, tracked_data.centery, A.score);
 				C.score=1000000;
 			}
@@ -373,8 +367,8 @@ write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 
  
     
-    for (NvDsMetaList * l_obj = frame_meta->obj_meta_list; l_obj != NULL;
-        l_obj = l_obj->next) {
+    for (NvDsMetaList * l_obj = frame_meta->obj_meta_list; l_obj != NULL; l_obj = l_obj->next) 
+    {
       NvDsObjectMeta *obj = (NvDsObjectMeta *) l_obj->data;
       	  
 	  B.label=obj->obj_label;
@@ -625,6 +619,7 @@ analytics_done_buf_prob (GstPad * pad, GstPadProbeInfo * info, gpointer u_data)
   NvDsInstanceBin *bin = (NvDsInstanceBin *) u_data;
   guint index = bin->index;
   AppCtx *appCtx = bin->appCtx;
+  tracked_data *tracking_output;
   GstBuffer *buf = (GstBuffer *) info->data;
   NvDsBatchMeta *batch_meta = gst_buffer_get_nvds_batch_meta (buf);
   if (!batch_meta) {
@@ -637,29 +632,7 @@ analytics_done_buf_prob (GstPad * pad, GstPadProbeInfo * info, gpointer u_data)
    */
 
   write_kitti_track_output(appCtx, batch_meta);
-  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  //char *per="person";
-  //int result = strcmp(bu.label,per);
-  //if(result == 0){
-//	  printf("frame:%d label:%s idx:%d cx:%.3f cy:%.3f w:%.3f h:%.3f\n",bu.fframe,bu.label,bu.idx,bu.centerx, bu.centery, bu.width, bu.height);
-//	  }
-  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  
-  
-  
-  //FILE *KI_file ;
-  //char *filename;
-  //sprintf(filename,"person_KI %d.txt",bu.fframe);
-  //KI_file=fopen (filename, "w");
-  //fprintf(KI_file,"frame:%d label:%s idx:%d cx:%.3f cy:%.3f w:%.3f h:%.3f\n",bu.fframe,bu.label,bu.idx,bu.centerx, bu.centery, bu.width, bu.height);
-  //fclose (KI_file);		  
-  
-  
-  
-  //if (appCtx->config.tracker_config.enable_past_frame)
-  //{
-  //    write_kitti_past_track_output (appCtx, batch_meta);
-  //}
+
   if (appCtx->bbox_generated_post_analytics_cb)
   {
     appCtx->bbox_generated_post_analytics_cb (appCtx, buf, batch_meta, index);
