@@ -38,7 +38,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#define UDPSendBufferSize 9
+#define UDPSendBufferSize 16
 //////////////////////////////////////////////////////////
 
 #define MAX_INSTANCES 128
@@ -46,7 +46,7 @@
 
 #define DEFAULT_X_WINDOW_WIDTH 1920
 #define DEFAULT_X_WINDOW_HEIGHT 1080
-tracked_data* tracking_output;
+
 AppCtx* appCtx[MAX_INSTANCES];
 static guint cintr = FALSE;
 static GMainLoop* main_loop = NULL;
@@ -85,15 +85,14 @@ int SendPort = 44666;
 char UDP_Xavier_send[UDPSendBufferSize];
 
 struct sockaddr_in clientAddr;
-extern struct tracking_output;
+extern tracking_ouput;
 
 struct Tracker_output
 {
-    unsigned short Centerpoint_X;
-    unsigned short Centerpoint_Y;
-    unsigned short Box_width;
-    unsigned short Box_height;
-    unsigned char Class_number;
+    float Centerpoint_X;
+    float Centerpoint_Y;
+    float Box_width;
+    float Box_height;
 }Tracker_output;
 
 /////////////////////////////////////////////////////////////
@@ -347,15 +346,19 @@ void udp_send_initialize()
 
 gint udp_send(gpointer data)
 {
-    Tracker_output.Centerpoint_X = tracking_output->centerx;
-    Tracker_output.Centerpoint_Y = tracking_output->centery;
-    Tracker_output.Box_width = 20;
-    Tracker_output.Box_height = 60;
-    Tracker_output.Class_number = 1;
+    Tracker_output.Centerpoint_X = tracking_output.centerx;
+    Tracker_output.Centerpoint_Y = tracking_output.centery;
+    Tracker_output.Box_width = tracking_output.width;
+    Tracker_output.Box_height = tracking_output.height;
+    //printf("tracking output1 = %f, %f", tracking_output.centerx, tracking_output.centery);
+    //printf("tracking output2 = %f, %f", Tracker_output.Centerpoint_X, Tracker_output.Centerpoint_Y);
+
 
     memcpy(&UDP_Xavier_send, &Tracker_output, sizeof(struct Tracker_output));
+    //printf("%c, %c, %c, %c \n", UDP_Xavier_send[0], UDP_Xavier_send[1], UDP_Xavier_send[2], UDP_Xavier_send[3]);
 
     sendto(hClientSock, UDP_Xavier_send, UDPSendBufferSize, 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr));
+    //printf("send done");
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
