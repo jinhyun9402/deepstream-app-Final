@@ -54,6 +54,7 @@ typedef void (*bbox_generated_callback) (AppCtx *appCtx, GstBuffer *buf,
 typedef gboolean (*overlay_graphics_callback) (AppCtx *appCtx, GstBuffer *buf,
     NvDsBatchMeta *batch_meta, guint index);
 
+//////////////////////////////////////////////////////////////////////////////
 typedef struct track_buf
 {
 	float centerx;
@@ -63,20 +64,18 @@ typedef struct track_buf
 	int fframe;
 	char *label;
 	int idx;
-	float score;
+	int flag;
 };
 
 struct tracked_data
 {
-	float centerx;
-	float centery;
+	float centerx ;
+	float centery; ;
 	float width;
 	float height;
-	int fframe;
-	char* label;
-	int idx;
-	float score;
+	int flag;
 }tracking_output;
+//////////////////////////////////////////////////////////////////////////////
 
 typedef struct
 {
