@@ -61,6 +61,7 @@ typedef struct track_buf
 	float centery;
 	float width;
 	float height;
+	float score;
 	int fframe;
 	char *label;
 	int idx;
