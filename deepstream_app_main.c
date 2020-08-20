@@ -634,7 +634,7 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
     /*****************************************************************************/
     //  kyungIn 20200819
     rect_params[0].left = Tracker_output.Centerpoint_X - 1;
-    rect_params[0].top = Tracker_output.y - 1;
+    rect_params[0].top = Tracker_output.Centerpoint_Y - 1;
     rect_params[0].width = 2;
     rect_params[0].height = 2;
     rect_params[0].border_width = 2;
