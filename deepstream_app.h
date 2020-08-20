@@ -64,7 +64,7 @@ typedef struct track_buf
 	int fframe;
 	char *label;
 	int idx;
-	int flag;
+	char flag;
 };
 
 struct tracked_data
@@ -73,8 +73,9 @@ struct tracked_data
 	float centery; ;
 	float width;
 	float height;
-	int flag;
+	char detect_flag;
 }tracking_output;
+
 //////////////////////////////////////////////////////////////////////////////
 
 typedef struct

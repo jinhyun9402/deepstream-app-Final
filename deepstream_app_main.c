@@ -38,7 +38,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#define UDPSendBufferSize 16
+#define UDPSendBufferSize 17
 //////////////////////////////////////////////////////////
 
 #define MAX_INSTANCES 128
@@ -87,12 +87,17 @@ char UDP_Xavier_send[UDPSendBufferSize];
 struct sockaddr_in clientAddr;
 extern tracking_ouput;
 
+//200819_Jinhyun
+//Tracking output
+int Loss_count;
+
 struct Tracker_output
 {
     float Centerpoint_X;
     float Centerpoint_Y;
     float Box_width;
     float Box_height;
+    char detect_flag;
 }Tracker_output;
 
 /////////////////////////////////////////////////////////////
@@ -329,6 +334,7 @@ static gboolean rrowsel = FALSE, selecting = FALSE;
 
 void udp_send_initialize()
 {
+    Loss_count = 0;
     hClientSock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     if (hClientSock == -1)
@@ -350,15 +356,28 @@ gint udp_send(gpointer data)
     Tracker_output.Centerpoint_Y = tracking_output.centery;
     Tracker_output.Box_width = tracking_output.width;
     Tracker_output.Box_height = tracking_output.height;
-    //printf("tracking output1 = %f, %f", tracking_output.centerx, tracking_output.centery);
-    //printf("tracking output2 = %f, %f", Tracker_output.Centerpoint_X, Tracker_output.Centerpoint_Y);
-
+    
+    if (tracking_output.detect_flag == 0)                             //Flag :  detect = 1, Loss = 0
+    {
+        Loss_count = Loss_count + 1;
+        if (Loss_count > 50)
+        {
+            Tracker_output.detect_flag = 0;
+        }
+        else
+        {
+            Tracker_output.detect_flag = 1;
+        }
+    }
+    else
+    {
+        Loss_count = 0;
+        Tracker_output.detect_flag = 1;
+    }
 
     memcpy(&UDP_Xavier_send, &Tracker_output, sizeof(struct Tracker_output));
-    //printf("%c, %c, %c, %c \n", UDP_Xavier_send[0], UDP_Xavier_send[1], UDP_Xavier_send[2], UDP_Xavier_send[3]);
 
     sendto(hClientSock, UDP_Xavier_send, UDPSendBufferSize, 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr));
-    //printf("send done");
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -611,16 +630,19 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
     NvDsDisplayMeta *display_meta = nvds_acquire_display_meta_from_pool (batch_meta);
     display_meta->num_labels = 1;
     NvOSD_RectParams *rect_params = display_meta->rect_params;
-    rect_params[0].left = 550;
-    rect_params[0].top = 300;
-    rect_params[0].width = 180;
-    rect_params[0].height = 120;
-    rect_params[0].border_width = 3;
-    rect_params[0].border_color = (NvOSD_ColorParams){0.0, 1.0, 0.0, 1.0};
+
+    /*****************************************************************************/
+    //  kyungIn 20200819
+    rect_params[0].left = Tracker_output.Centerpoint_X - 1;
+    rect_params[0].top = Tracker_output.y - 1;
+    rect_params[0].width = 2;
+    rect_params[0].height = 2;
+    rect_params[0].border_width = 2;
+    rect_params[0].border_color = (NvOSD_ColorParams){1.0, 0.0, 1.0, 1.0};
     display_meta->num_rects++;
     if (source_ids[index] == -1)
         return TRUE;
-
+    /*****************************************************************************/
     //NvDsFrameLatencyInfo* latency_info = NULL;
     //NvDsDisplayMeta* display_meta = nvds_acquire_display_meta_from_pool(batch_meta);
 

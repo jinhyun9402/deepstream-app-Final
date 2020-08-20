@@ -338,13 +338,13 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		  past_frame.score=1000000;
 		  present_frame_best.fframe=1;
 		  present_frame_best.score=1000000;
-
+          tracking_output.detect_flag = 0;
 		  }
     if(past_frame.fframe!=present_frame_best.fframe){
 		if(present_frame_best.score>20000){
 			printf("c.score run");
 			printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f\n",past_frame.fframe,past_frame.centerx, past_frame.centery, past_frame.score);
-            tracking_output.flag=1; 
+            tracking_output.detect_flag =0; // loss
 			present_frame_best.score=1000000;
 			}else{
 				printf("A");
@@ -353,8 +353,8 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
                 past_frame.score= present_frame_best.score;
                 tracking_output.centerx = past_frame.centerx;
                 tracking_output.centery = past_frame.centery;
-                tracking_output.flag=0;
-                printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f flag:%d\n", past_frame.fframe, tracking_output.centerx, tracking_output.centery, past_frame.score,tracking_output.flag);
+                tracking_output.detect_flag =1; // find
+                printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f detect_flag:%d\n", past_frame.fframe, tracking_output.centerx, tracking_output.centery, past_frame.score,tracking_output.detect_flag);
                 present_frame_best.score=1000000;
 			}
 	}
