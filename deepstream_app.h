@@ -55,7 +55,7 @@ typedef gboolean (*overlay_graphics_callback) (AppCtx *appCtx, GstBuffer *buf,
     NvDsBatchMeta *batch_meta, guint index);
 
 //////////////////////////////////////////////////////////////////////////////
-typedef struct track_buf
+struct track_buf
 {
 	float centerx;
 	float centery;
@@ -68,14 +68,14 @@ typedef struct track_buf
 	char flag;
 };
 
-struct tracked_data
+typedef struct
 {
-	float centerx ;
-	float centery; ;
+	float centerx;
+	float centery;
 	float width;
 	float height;
 	char detect_flag;
-}tracking_output;
+}tracked_data;
 
 //////////////////////////////////////////////////////////////////////////////
 

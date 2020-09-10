@@ -35,6 +35,8 @@ static struct track_buf past_frame;
 static struct track_buf present_frame; 
 static struct track_buf present_frame_best;
 
+extern tracked_data tracking_output;
+
 GST_DEBUG_CATEGORY_EXTERN (NVDS_APP);
 
 GQuark _dsmeta_quark;
@@ -311,7 +313,7 @@ static void write_kitti_past_track_output (AppCtx * appCtx, NvDsBatchMeta * batc
  * Data of different sources and frames is dumped in separate file.
  */
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_meta)
 {
   gchar bbox_file[1024] = { 0 };
@@ -338,51 +340,57 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		  past_frame.score=1000000;
 		  present_frame_best.fframe=1;
 		  present_frame_best.score=1000000;
-          tracking_output.detect_flag = 0;
+		  tracking_output.detect_flag=0;
 		  }
-    if(past_frame.fframe!=present_frame_best.fframe){
-		if(present_frame_best.score>20000){
-			printf("c.score run");
-			printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f\n",past_frame.fframe,past_frame.centerx, past_frame.centery, past_frame.score);
-            tracking_output.detect_flag = 0; // loss
+    if(past_frame.fframe!=present_frame_best.fframe)
+    {
+		if(present_frame_best.score>20000)
+		{
+			tracking_output.detect_flag = 0; // loss
 			present_frame_best.score=1000000;
-			}else{
-				printf("A");
-                past_frame.centerx= past_frame.centerx+ present_frame_best.centerx;
-                past_frame.centery= past_frame.centery+ present_frame_best.centery;
-                past_frame.score= present_frame_best.score;
-                tracking_output.centerx = past_frame.centerx;
-                tracking_output.centery = past_frame.centery;
-                tracking_output.detect_flag = 1; // find
-                printf("frame:%d idx:1 cx:%.3f cy:%.3f score:%f detect_flag:%d\n", past_frame.fframe, tracking_output.centerx, tracking_output.centery, past_frame.score,tracking_output.detect_flag);
-                present_frame_best.score=1000000;
-			}
-	}
-	    
+		}
+		else
+		{
+			past_frame.centerx = past_frame.centerx + present_frame_best.centerx;
+			past_frame.centery = past_frame.centery + present_frame_best.centery;
+			past_frame.score = present_frame_best.score;
+			tracking_output.centerx = past_frame.centerx;
+        	tracking_output.centery = past_frame.centery;
+            tracking_output.detect_flag = 1; // find
+	        present_frame_best.score=1000000;
+		}
+    }
+
     for (NvDsMetaList * l_obj = frame_meta->obj_meta_list; l_obj != NULL; l_obj = l_obj->next) 
     {
-      NvDsObjectMeta *obj = (NvDsObjectMeta *) l_obj->data;
-      present_frame.label=obj->obj_label;
-	  char *per="person";
-      int result = strcmp(present_frame.label,per);
-      if(result == 0){
-          float left = obj->rect_params.left;
-		  float top = obj->rect_params.top;
-          present_frame.centerx = left + (obj->rect_params.width)/2-960-past_frame.centerx;
-          present_frame.centery = top + (obj->rect_params.height)/2-540-past_frame.centery;
-          present_frame.score=abs(present_frame.centerx* present_frame.centerx)+abs(present_frame.centery* present_frame.centery);
-
-		  if(present_frame_best.score> present_frame.score){
-              present_frame_best.score= present_frame.score;
-              present_frame_best.centerx= present_frame.centerx;
-              present_frame_best.centery= present_frame.centery;
-              present_frame_best.fframe=frame_meta->frame_num+1;
-			  }
+	    NvDsObjectMeta *obj = (NvDsObjectMeta *) l_obj->data;
+	    present_frame.label=obj->obj_label;
+	    char *per="person";
+	    int result = strcmp(present_frame.label,per);
+	    if(result == 0)
+	    {
+		    float left = obj->rect_params.left;
+		    float top = obj->rect_params.top;
+		    present_frame.centerx = left + (obj->rect_params.width)/2-960-past_frame.centerx;
+		    present_frame.centery = top + (obj->rect_params.height)/2-540-past_frame.centery;
+		    present_frame.score=abs(present_frame.centerx* present_frame.centerx)+abs(present_frame.centery* present_frame.centery);
+		    
+		    if(present_frame_best.score> present_frame.score)
+		    {
+			    present_frame_best.score= present_frame.score;
+			    present_frame_best.centerx= present_frame.centerx;
+			    present_frame_best.centery= present_frame.centery;
+			    present_frame_best.fframe=frame_meta->frame_num+1;
+		    }
 	    }
     }
+
     fclose (bbox_params_dump_file);
   }
+  
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static gint
 component_id_compare_func (gconstpointer a, gconstpointer b)

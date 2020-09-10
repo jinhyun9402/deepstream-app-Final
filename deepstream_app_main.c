@@ -85,11 +85,13 @@ int SendPort = 44666;
 char UDP_Xavier_send[UDPSendBufferSize];
 
 struct sockaddr_in clientAddr;
-extern tracking_ouput;
 
 //200819_Jinhyun
 //Tracking output
 int Loss_count;
+
+tracked_data tracking_output;
+extern tracked_data tracking_output;
 
 struct Tracker_output
 {
@@ -633,12 +635,17 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
 
     /*****************************************************************************/
     //  kyungIn 20200819
+<<<<<<< HEAD
+    rect_params[0].left = 960 + tracking_output.centerx - 1;
+    rect_params[0].top = 540 - tracking_output.centery - 1;
+=======
     rect_params[0].left = Tracker_output.Centerpoint_X - 1;
     rect_params[0].top = Tracker_output.Centerpoint_Y - 1;
+>>>>>>> cf024763b157ae8ac35ec2757a371285971faf87
     rect_params[0].width = 2;
     rect_params[0].height = 2;
     rect_params[0].border_width = 2;
-    rect_params[0].border_color = (NvOSD_ColorParams){1.0, 0.0, 1.0, 1.0};
+    rect_params[0].border_color = (NvOSD_ColorParams){1, 0, 1, 1};
     display_meta->num_rects++;
     if (source_ids[index] == -1)
         return TRUE;
