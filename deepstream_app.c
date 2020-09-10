@@ -355,7 +355,7 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 			past_frame.centery = past_frame.centery + present_frame_best.centery;
 			past_frame.score = present_frame_best.score;
 			tracking_output.centerx = past_frame.centerx;
-        	tracking_output.centery = past_frame.centery;
+        	tracking_output.centery = -past_frame.centery;
             tracking_output.detect_flag = 1; // find
 	        present_frame_best.score=1000000;
 		}
