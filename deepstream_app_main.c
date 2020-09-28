@@ -376,7 +376,6 @@ gint udp_send(gpointer data)
         Loss_count = 0;
         Tracker_output.detect_flag = 1;
     }
-	printf("x:%f, y:%f, flag:%u\n",Tracker_output.Centerpoint_X, Tracker_output.Centerpoint_Y, Tracker_output.detect_flag);
     memcpy(&UDP_Xavier_send, &Tracker_output, sizeof(struct Tracker_output));
 
     sendto(hClientSock, UDP_Xavier_send, UDPSendBufferSize, 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr));
@@ -487,7 +486,12 @@ static gboolean event_thread_func(gpointer arg)
         {
             g_print("--selecting source --\n");
             selecting = TRUE;
-        }
+    case 't':
+		tracking_output.reset_flag = 1;
+		g_print("Reset flag on : %u",tracking_output.reset_flag);
+		break;
+		
+    }
         else
         {
             if (!show_bbox_text)
@@ -635,15 +639,15 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
 
     /*****************************************************************************/
     //  kyungIn 20200819
-    rect_params[0].left = 960 + tracking_output.centerx - 1;
-    rect_params[0].top = 510 - tracking_output.centery + 1;
-    rect_params[0].width = 2;
-    rect_params[0].height = 2;
-    rect_params[0].border_width = 2;
-    rect_params[0].border_color = (NvOSD_ColorParams){0, 1, 0, 1};
-    display_meta->num_rects++;
-    if (source_ids[index] == -1)
-        return TRUE;
+    //rect_params[0].left = 960 + tracking_output.centerx - 1;
+    //rect_params[0].top = 510 - tracking_output.centery + 1;
+    //rect_params[0].width = 2;
+    //rect_params[0].height = 2;
+    //rect_params[0].border_width = 2;
+    //rect_params[0].border_color = (NvOSD_ColorParams){0, 1, 0, 1};
+    //display_meta->num_rects++;
+    //if (source_ids[index] == -1)
+    //    return TRUE;
     /*****************************************************************************/
     //NvDsFrameLatencyInfo* latency_info = NULL;
     //NvDsDisplayMeta* display_meta = nvds_acquire_display_meta_from_pool(batch_meta);
