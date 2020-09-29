@@ -334,17 +334,26 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
     if (!bbox_params_dump_file)
       continue;
     past_frame.fframe=frame_meta->frame_num+1;
-     if(past_frame.fframe==1){
+    if((past_frame.fframe==1)||(tracking_output.reset == 1)){
 		  past_frame.centerx=0;
 		  past_frame.centery=0;
+		  past_frame.width=0;
+		  past_frame.height=0;
 		  past_frame.score=1000000;
 		  present_frame_best.fframe=1;
 		  present_frame_best.score=1000000;
 		  tracking_output.detect_flag=0;
+		  tracking_output.reset_flag = 0;
+		  tracking_output.reset = 0;
+		  tracking_output.centerx=0;
+		  tracking_output.centery=0;
+		  printf("reset");
 		  }
+	
+    printf("%i \n", tracking_output.reset);
     if(past_frame.fframe!=present_frame_best.fframe)
     {
-		if(present_frame_best.score>20000)
+		if(present_frame_best.score>62500) //r=250 ^2
 		{
 			tracking_output.detect_flag = 0; // loss
 			present_frame_best.score=1000000;
@@ -353,9 +362,13 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		{
 			past_frame.centerx = past_frame.centerx + present_frame_best.centerx;
 			past_frame.centery = past_frame.centery + present_frame_best.centery;
+			past_frame.width = present_frame_best.width;
+			past_frame.height = present_frame_best.height;
 			past_frame.score = present_frame_best.score;
 			tracking_output.centerx = past_frame.centerx;
         	tracking_output.centery = -past_frame.centery;
+        	tracking_output.width = past_frame.width;
+        	tracking_output.height = past_frame.height;
             tracking_output.detect_flag = 1; // find
 	        present_frame_best.score=1000000;
 		}
@@ -373,6 +386,8 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		    float top = obj->rect_params.top;
 		    present_frame.centerx = left + (obj->rect_params.width)/2-960-past_frame.centerx;
 		    present_frame.centery = top + (obj->rect_params.height)/2-540-past_frame.centery;
+		    present_frame.width = obj->rect_params.width;
+		    present_frame.height = obj->rect_params.height;
 		    present_frame.score=abs(present_frame.centerx* present_frame.centerx)+abs(present_frame.centery* present_frame.centery);
 		    
 		    if(present_frame_best.score> present_frame.score)
@@ -380,6 +395,8 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 			    present_frame_best.score= present_frame.score;
 			    present_frame_best.centerx= present_frame.centerx;
 			    present_frame_best.centery= present_frame.centery;
+			    present_frame_best.width= present_frame.width;
+			    present_frame_best.height= present_frame.height;
 			    present_frame_best.fframe=frame_meta->frame_num+1;
 		    }
 	    }
@@ -387,7 +404,6 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 
     fclose (bbox_params_dump_file);
   }
-  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

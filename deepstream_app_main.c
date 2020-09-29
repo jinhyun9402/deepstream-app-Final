@@ -362,7 +362,7 @@ gint udp_send(gpointer data)
     if (tracking_output.detect_flag == 0)                             //Flag :  detect = 1, Loss = 0
     {
         Loss_count = Loss_count + 1;
-        if (Loss_count > 50)
+        if (Loss_count > 1)
         {
             Tracker_output.detect_flag = 0;
         }
@@ -376,7 +376,6 @@ gint udp_send(gpointer data)
         Loss_count = 0;
         Tracker_output.detect_flag = 1;
     }
-	printf("x:%f, y:%f, flag:%u\n",Tracker_output.Centerpoint_X, Tracker_output.Centerpoint_Y, Tracker_output.detect_flag);
     memcpy(&UDP_Xavier_send, &Tracker_output, sizeof(struct Tracker_output));
 
     sendto(hClientSock, UDP_Xavier_send, UDPSendBufferSize, 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr));
@@ -487,7 +486,13 @@ static gboolean event_thread_func(gpointer arg)
         {
             g_print("--selecting source --\n");
             selecting = TRUE;
-        }
+    case 't':
+		tracking_output.reset_flag = 1;
+		tracking_output.reset = 1;
+		g_print("Reset flag on : %u",tracking_output.reset_flag);
+		break;
+		
+    }
         else
         {
             if (!show_bbox_text)
@@ -631,17 +636,39 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
     NvDsFrameLatencyInfo* latency_info = NULL;
     NvDsDisplayMeta *display_meta = nvds_acquire_display_meta_from_pool (batch_meta);
     display_meta->num_labels = 1;
-    NvOSD_RectParams *rect_params = display_meta->rect_params;
+
 
     /*****************************************************************************/
-    //  kyungIn 20200819
-    rect_params[0].left = 960 + tracking_output.centerx - 1;
-    rect_params[0].top = 510 - tracking_output.centery + 1;
-    rect_params[0].width = 2;
-    rect_params[0].height = 2;
-    rect_params[0].border_width = 2;
+ //  kyungIn 20200909
+    NvOSD_LineParams *line_params = display_meta->line_params;
+    line_params[0].x1 = 950+ tracking_output.centerx;//for demonstration, user need to se these values
+    line_params[0].y1 = 540 - tracking_output.centery;
+    line_params[0].x2 = 970+ tracking_output.centerx;;
+    line_params[0].y2 = 540 - tracking_output.centery;
+    line_params[0].line_width = 20;
+    line_params[0].line_color = (NvOSD_ColorParams){1.0, 0.0, 0.0, 1.0};
+    display_meta->num_lines++;
+ 
+    NvOSD_RectParams *rect_params = display_meta->rect_params;
+    //rect_params[0].left = 960+ tracking_output.centerx - 10;
+    //rect_params[0].top = 540 - tracking_output.cdk tlqentery + 10;
+    //rect_params[0].width = 20;
+    //rect_params[0].height = 20;
+    //rect_params[0].border_width = 3;
+    //rect_params[0].border_color = (NvOSD_ColorParams){0, 1, 0, 1};
+    //display_meta->num_rects++;
+    //if (source_ids[index] == -1)
+    //return TRUE;
+   
+    rect_params[0].left = 960+ tracking_output.centerx - 250;
+    rect_params[0].top = 540 - tracking_output.centery - 250;
+    rect_params[0].width = 500;
+    rect_params[0].height = 500;
+    rect_params[0].border_width = 6;
     rect_params[0].border_color = (NvOSD_ColorParams){0, 1, 0, 1};
     display_meta->num_rects++;
+    
+    
     if (source_ids[index] == -1)
         return TRUE;
     /*****************************************************************************/
