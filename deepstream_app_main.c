@@ -488,7 +488,10 @@ static gboolean event_thread_func(gpointer arg)
             selecting = TRUE;
     case 't':
 		tracking_output.reset_flag = 1;
+<<<<<<< HEAD
 		tracking_output.reset = 1;
+=======
+>>>>>>> 88b6ff9c7b65a89db9674651ddcc36d4c22ba093
 		g_print("Reset flag on : %u",tracking_output.reset_flag);
 		break;
 		
@@ -639,6 +642,7 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
 
 
     /*****************************************************************************/
+<<<<<<< HEAD
  //  kyungIn 20200909
     NvOSD_LineParams *line_params = display_meta->line_params;
     line_params[0].x1 = 950+ tracking_output.centerx;//for demonstration, user need to se these values
@@ -671,6 +675,18 @@ static gboolean overlay_graphics(AppCtx* appCtx, GstBuffer* buf, NvDsBatchMeta* 
     
     if (source_ids[index] == -1)
         return TRUE;
+=======
+    //  kyungIn 20200819
+    //rect_params[0].left = 960 + tracking_output.centerx - 1;
+    //rect_params[0].top = 510 - tracking_output.centery + 1;
+    //rect_params[0].width = 2;
+    //rect_params[0].height = 2;
+    //rect_params[0].border_width = 2;
+    //rect_params[0].border_color = (NvOSD_ColorParams){0, 1, 0, 1};
+    //display_meta->num_rects++;
+    //if (source_ids[index] == -1)
+    //    return TRUE;
+>>>>>>> 88b6ff9c7b65a89db9674651ddcc36d4c22ba093
     /*****************************************************************************/
     //NvDsFrameLatencyInfo* latency_info = NULL;
     //NvDsDisplayMeta* display_meta = nvds_acquire_display_meta_from_pool(batch_meta);

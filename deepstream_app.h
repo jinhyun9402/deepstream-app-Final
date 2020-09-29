@@ -76,7 +76,10 @@ typedef struct
 	float height;
 	char detect_flag;
 	char reset_flag;
+<<<<<<< HEAD
 	int reset
+=======
+>>>>>>> 88b6ff9c7b65a89db9674651ddcc36d4c22ba093
 }tracked_data;
 
 //////////////////////////////////////////////////////////////////////////////
