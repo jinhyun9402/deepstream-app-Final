@@ -486,14 +486,6 @@ static gboolean event_thread_func(gpointer arg)
         {
             g_print("--selecting source --\n");
             selecting = TRUE;
-        }
-///////////////////////////////////////////////////////////////////////////////////////
-    case 't':
-		tracking_output.reset_flag = 1;
-		g_print("Reset flag on : %u",tracking_output.reset_flag);
-		break;
-///////////////////////////////////////////////////////////////////////////////////////		
-    }
         else
         {
             if (!show_bbox_text)
@@ -502,6 +494,13 @@ static gboolean event_thread_func(gpointer arg)
             source_ids[0] = -1;
             selecting = FALSE;
             g_print("--tiled mode --\n");
+        }
+///////////////////////////////////////////////////////////////////////////////////////
+    case 't':
+        tracking_output.reset_flag = 1;
+        g_print("Reset flag on : %u", tracking_output.reset_flag);
+        break;
+///////////////////////////////////////////////////////////////////////////////////////		
         }
         break;
     default:
