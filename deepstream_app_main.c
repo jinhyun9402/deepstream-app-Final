@@ -496,14 +496,13 @@ static gboolean event_thread_func(gpointer arg)
             selecting = FALSE;
             g_print("--tiled mode --\n");
         }
+        break;
 ///////////////////////////////////////////////////////////////////////////////////////
     case 't':
         tracking_output.reset_flag = 1;
         g_print("Reset flag on : %u", tracking_output.reset_flag);
         break;
-///////////////////////////////////////////////////////////////////////////////////////		
-        }
-        break;
+///////////////////////////////////////////////////////////////////////////////////////
     default:
         break;
     }
