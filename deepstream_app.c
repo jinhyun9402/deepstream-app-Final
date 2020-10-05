@@ -334,7 +334,7 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
     if (!bbox_params_dump_file)
       continue;
     past_frame.fframe=frame_meta->frame_num+1;
-    if((past_frame.fframe==1)||(tracking_output.reset == 1)){
+    if((past_frame.fframe==1)||(tracking_output.reset_flag == 1)){
 		  past_frame.centerx=0;
 		  past_frame.centery=0;
 		  past_frame.width=0;
@@ -344,13 +344,12 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		  present_frame_best.score=1000000;
 		  tracking_output.detect_flag=0;
 		  tracking_output.reset_flag = 0;
-		  tracking_output.reset = 0;
 		  tracking_output.centerx=0;
 		  tracking_output.centery=0;
 		  printf("reset");
 		  }
 	
-    printf("%i \n", tracking_output.reset);
+    printf("%i \n", tracking_output.reset_flag);
     if(past_frame.fframe!=present_frame_best.fframe)
     {
 		if(present_frame_best.score>62500) //r=250 ^2
@@ -405,7 +404,6 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
     fclose (bbox_params_dump_file);
   }
 }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static gint

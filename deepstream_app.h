@@ -75,8 +75,7 @@ typedef struct
 	float width;
 	float height;
 	char detect_flag;
-	char reset_flag;
-	int reset
+	int reset_flag;
 }tracked_data;
 
 //////////////////////////////////////////////////////////////////////////////
