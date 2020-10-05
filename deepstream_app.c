@@ -346,10 +346,9 @@ static void write_kitti_track_output (AppCtx * appCtx, NvDsBatchMeta * batch_met
 		  tracking_output.reset_flag = 0;
 		  tracking_output.centerx=0;
 		  tracking_output.centery=0;
-		  printf("reset");
+		  printf("reset\n");
 		  }
 	
-    printf("%i \n", tracking_output.reset_flag);
     if(past_frame.fframe!=present_frame_best.fframe)
     {
 		if(present_frame_best.score>62500) //r=250 ^2

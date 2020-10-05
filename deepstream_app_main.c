@@ -486,6 +486,7 @@ static gboolean event_thread_func(gpointer arg)
         {
             g_print("--selecting source --\n");
             selecting = TRUE;
+        }
 ///////////////////////////////////////////////////////////////////////////////////////
     case 't':
 		tracking_output.reset_flag = 1;
